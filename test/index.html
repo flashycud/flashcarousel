@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="../bower_components/jquery/dist/jquery.js"></script>
+  <script src="../flashcarousel.js"></script>
+  <style>
+    body,html {
+      background-color: #E8580F;
+    }
+    .container-1 {
+      width: 70%;
+      margin: auto;
+      background: rgba(37,37,37,0.3);
+    }
+  </style>
+  <script>
+  </script>
+</head>
+<body>
+
+  <div class="container-1">
+    <div class="carousel">
+      <img src="1.jpg">
+      <img src="2.jpg">
+      <img src="3.jpg">
+      <img src="4.jpg">
+      <img src="5.jpg">
+    </div>
+  </div>
+
+  <script>
+    var el = $('.container-1 .carousel');
+    FlashCarousel(el);
+  </script>
+
+</body>
+</html>
