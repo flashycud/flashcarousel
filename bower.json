@@ -1,0 +1,36 @@
+{
+  "name": "FlashCarousel",
+  "version": "0.0.1",
+  "homepage": "https://github.com/flashycud/flashcarousel",
+  "authors": [
+    "Flash <me@flashycud.com>"
+  ],
+  "description": "JavaScript Image Carousel",
+  "main": [
+    "dist/flashcarousel.js",
+    "dist/flashcarousel.css"
+  ],
+  "keywords": [
+    "flashcarousel",
+    "jquery",
+    "slider",
+    "flashycud",
+    "AMD",
+    "carousel",
+    "image"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4"
+  },
+  "devDependencies": {
+    "sass.js": "~0.9.2"
+  }
+}
