@@ -1,0 +1,24 @@
+/* main.scss */
+
+@import 'variables';
+@import 'mixins';
+
+.border-box {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.flash-carousel {
+  @extend .border-box;
+
+  display: block;
+  height: $carousel-height;
+  width: 100%;
+  overflow: hidden;
+
+  &-slide {
+
+  }
+
+}
