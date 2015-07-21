@@ -9,7 +9,7 @@ JavaScript Image Carousel
 ```
 
 ##Usage
-```
+```html
 <div class="target">
   <img src="your/image/source">
   <img src="your/image/source">
@@ -17,7 +17,7 @@ JavaScript Image Carousel
   ......
 </div>
 ```
-```
+```javascript
 // Use as a selector
 FlashCarousel(".target");
 
