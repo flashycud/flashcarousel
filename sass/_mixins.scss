@@ -1,0 +1,15 @@
+/* _mixin.scss */
+
+
+@mixin border-radius ($r) {
+  border-radius: $r;
+  -webkit-border-radius: $r;
+  -moz-border-radius: $r;
+}
+@mixin transition ($t) {
+  -webkit-transition: all $t ease-in-out;
+  -moz-transition: all $t ease-in-out;
+  -ms-transition: all $t ease-in-out;
+  -o-transition: all $t ease-in-out;
+  transition: all $t ease-in-out;
+}

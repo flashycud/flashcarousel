@@ -1,0 +1,164 @@
+/* main.scss */
+
+@import 'variables';
+@import 'mixins';
+
+.border-box {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.flash-carousel {
+  @extend .border-box;
+
+  position: relative;
+  display: block;
+  height: $carousel-height;
+  width: 100%;
+  overflow: hidden;
+
+  &-slides {
+    display: block;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    z-index: 0;
+  }
+
+  &-slide {
+    @extend .border-box;
+    @include transition($slide-duration);
+
+    position: absolute;
+    display: table;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    
+    img {
+
+      height: 100%;
+      width: auto;
+
+      &.height-based {
+        height: 100%;
+        width: auto;
+      }
+
+      &.width-based {
+        height: auto;
+        width: 100%;
+      }
+    }
+
+  }
+
+
+  /* == Navigation */
+
+  &-nav {
+    position: absolute;
+    height: 100%;
+    width: 30%;
+    top: 0;
+    cursor: pointer;
+  }
+
+  &-arrow {
+    @include border-radius($arrow-size);
+    @include transition($arrow-duration);
+    overflow: hidden;
+    width: $arrow-size;
+    height: $arrow-size;
+    position: absolute;
+    top: calc(50% - #{$arrow-size/2});
+    background-color: $arrow-bg-color-1;
+
+    &:before {
+      content: "";
+      display: inline-block;
+      width: $arrow-size;    
+      height: $arrow-size;    
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: 50%;
+    }
+  }
+
+  &-nav-left {
+    @extend .flash-carousel-nav;
+    left: 0;
+
+    &-arrow {
+      @extend .flash-carousel-arrow;
+
+      left: - $arrow-size - $arrow-margin;
+
+      &:before {
+        background-image: $left-bg;
+      }
+    }
+
+    &:hover &-arrow {
+      background-color: $arrow-bg-color-2;
+    }
+  }
+
+  &:hover &-nav-left &-arrow {
+    left: $arrow-margin;
+  }
+
+  &-nav-right {
+    @extend .flash-carousel-nav;
+    right: 0;
+
+    &-arrow {
+      @extend .flash-carousel-arrow;
+
+      right: - $arrow-size - $arrow-margin;
+
+      &:before {
+        background-image: $right-bg;
+      }
+    }
+
+    &:hover &-arrow {
+      background-color: $arrow-bg-color-2;
+    }
+  }
+
+  &:hover &-nav-right &-arrow {
+    right: $arrow-margin;
+  }
+
+
+  /* == Pagination */
+  &-dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    text-align: center;
+  }
+
+  &-dot {
+    @include border-radius(10px);
+
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin: 0 5px;
+    background-color: rgba(37,37,37,0.6);
+    border: solid 1px rgba(240,240,240,0.6);
+    cursor: pointer;
+    &.active, &:hover {
+      background-color: #FFF;
+      border: solid 1px rgba(37,37,37,0.6);
+
+    }
+  }
+
+
+}
