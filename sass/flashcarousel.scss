@@ -3,62 +3,78 @@
 @import 'variables';
 @import 'mixins';
 
-.border-box {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
 
 .flash-carousel {
-  @extend .border-box;
+  &, .border-box {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
 
-  position: relative;
-  display: block;
-  height: $carousel-height;
-  width: 100%;
-  overflow: hidden;
+  &, .noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-  &-slides {
+  &, .bounding-box {
     display: block;
     height: 100%;
     width: 100%;
     overflow: hidden;
-    position: relative;
-    z-index: 0;
   }
 
-  &-slide {
+  position: relative;
+  min-height: $carousel-height;
+
+  &--slides {
+    @extend .bounding-box;
+    @include transition($slides-show-duration);
+
+    position: relative;
+    z-index: 0;
+    opacity: 1;
+
+    &.hide {
+      @include transition($slides-fade-duration);
+      opacity: 0
+    }
+  }
+
+  &--slides.hide &--slide {
+    /*@include transition(0);*/
+  }
+
+  &--slide {
     @extend .border-box;
+    @extend .bounding-box;
     @include transition($slide-duration);
 
     position: absolute;
-    display: table;
-    height: 100%;
-    width: 100%;
-    text-align: center;
     
     img {
-
-      height: 100%;
-      width: auto;
-
+      position: relative;
+      top: 50%;
+      left: 50%;
       &.height-based {
-        height: 100%;
-        width: auto;
+        height: 100% !important;
+        width: auto !important;
       }
 
       &.width-based {
-        height: auto;
-        width: 100%;
+        height: auto !important;
+        width: 100% !important;
       }
     }
-
   }
 
 
   /* == Navigation */
 
-  &-nav {
+  &--nav {
     position: absolute;
     height: 100%;
     width: 30%;
@@ -66,7 +82,7 @@
     cursor: pointer;
   }
 
-  &-arrow {
+  &--arrow {
     @include border-radius($arrow-size);
     @include transition($arrow-duration);
     overflow: hidden;
@@ -87,12 +103,12 @@
     }
   }
 
-  &-nav-left {
-    @extend .flash-carousel-nav;
+  &--nav-left {
+    @extend .flash-carousel--nav;
     left: 0;
 
     &-arrow {
-      @extend .flash-carousel-arrow;
+      @extend .flash-carousel--arrow;
 
       left: - $arrow-size - $arrow-margin;
 
@@ -106,16 +122,18 @@
     }
   }
 
-  &:hover &-nav-left &-arrow {
-    left: $arrow-margin;
+  &:hover &--nav-left {
+    &-arrow {
+      left: $arrow-margin;
+    }
   }
 
-  &-nav-right {
-    @extend .flash-carousel-nav;
+  &--nav-right {
+    @extend .flash-carousel--nav;
     right: 0;
 
     &-arrow {
-      @extend .flash-carousel-arrow;
+      @extend .flash-carousel--arrow;
 
       right: - $arrow-size - $arrow-margin;
 
@@ -129,13 +147,15 @@
     }
   }
 
-  &:hover &-nav-right &-arrow {
-    right: $arrow-margin;
+  &:hover &--nav-right {
+    &-arrow {
+      right: $arrow-margin;
+    }
   }
 
 
   /* == Pagination */
-  &-dots {
+  &--dots {
     position: absolute;
     left: 0;
     right: 0;
@@ -143,7 +163,7 @@
     text-align: center;
   }
 
-  &-dot {
+  &--dot {
     @include border-radius(10px);
 
     display: inline-block;
