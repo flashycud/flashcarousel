@@ -4,6 +4,7 @@
 .flash-carousel {
   position: relative;
   min-height: 200px;
+  background-color: rgba(37, 37, 37, 0.3);
   /* == Navigation */
   /* == Pagination */ }
   .flash-carousel, .flash-carousel .border-box, .flash-carousel .flash-carousel--slide {
@@ -22,30 +23,116 @@
     height: 100%;
     width: 100%;
     overflow: hidden; }
+@-webkit-keyframes rotate {
+  0% {
+    -ms-transform: rotate(0);
+    /* IE 9 */
+    -webkit-transform: rotate(0);
+    /* Chrome, Safari, Opera */
+    transform: rotate(0); }
+  100% {
+    -ms-transform: rotate(360deg);
+    /* IE 9 */
+    -webkit-transform: rotate(360deg);
+    /* Chrome, Safari, Opera */
+    transform: rotate(360deg); } }
+@-moz-keyframes rotate {
+  0% {
+    -ms-transform: rotate(0);
+    /* IE 9 */
+    -webkit-transform: rotate(0);
+    /* Chrome, Safari, Opera */
+    transform: rotate(0); }
+  100% {
+    -ms-transform: rotate(360deg);
+    /* IE 9 */
+    -webkit-transform: rotate(360deg);
+    /* Chrome, Safari, Opera */
+    transform: rotate(360deg); } }
+@-ms-keyframes rotate {
+  0% {
+    -ms-transform: rotate(0);
+    /* IE 9 */
+    -webkit-transform: rotate(0);
+    /* Chrome, Safari, Opera */
+    transform: rotate(0); }
+  100% {
+    -ms-transform: rotate(360deg);
+    /* IE 9 */
+    -webkit-transform: rotate(360deg);
+    /* Chrome, Safari, Opera */
+    transform: rotate(360deg); } }
+@-o-keyframes rotate {
+  0% {
+    -ms-transform: rotate(0);
+    /* IE 9 */
+    -webkit-transform: rotate(0);
+    /* Chrome, Safari, Opera */
+    transform: rotate(0); }
+  100% {
+    -ms-transform: rotate(360deg);
+    /* IE 9 */
+    -webkit-transform: rotate(360deg);
+    /* Chrome, Safari, Opera */
+    transform: rotate(360deg); } }
+@keyframes rotate {
+  0% {
+    -ms-transform: rotate(0);
+    /* IE 9 */
+    -webkit-transform: rotate(0);
+    /* Chrome, Safari, Opera */
+    transform: rotate(0); }
+  100% {
+    -ms-transform: rotate(360deg);
+    /* IE 9 */
+    -webkit-transform: rotate(360deg);
+    /* Chrome, Safari, Opera */
+    transform: rotate(360deg); } }
+  .flash-carousel--loading {
+    -webkit-animation: rotate .5s linear infinite;
+    -moz-animation: rotate .5s linear infinite;
+    -ms-animation: rotate .5s linear infinite;
+    -o-animation: rotate .5s linear infinite;
+    animation: rotate .5s linear infinite;
+    -webkit-transition: opacity 0.3s;
+    -moz-transition: opacity 0.3s;
+    -ms-transition: opacity 0.3s;
+    -o-transition: opacity 0.3s;
+    transition: opacity 0.3s;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
+    margin-left: -25px; }
+    .flash-carousel--loading-path {
+      fill: #FFF;
+      visibility: visible; }
   .flash-carousel--slides {
-    -webkit-transition: all 0.7s ease-in-out;
-    -moz-transition: all 0.7s ease-in-out;
-    -ms-transition: all 0.7s ease-in-out;
-    -o-transition: all 0.7s ease-in-out;
-    transition: all 0.7s ease-in-out;
+    -webkit-transition: all ease-in-out 0.7s;
+    -moz-transition: all ease-in-out 0.7s;
+    -ms-transition: all ease-in-out 0.7s;
+    -o-transition: all ease-in-out 0.7s;
+    transition: all ease-in-out 0.7s;
     position: relative;
     z-index: 0;
     opacity: 1; }
     .flash-carousel--slides.hide {
-      -webkit-transition: all 0.3s ease-in-out;
-      -moz-transition: all 0.3s ease-in-out;
-      -ms-transition: all 0.3s ease-in-out;
-      -o-transition: all 0.3s ease-in-out;
-      transition: all 0.3s ease-in-out;
+      -webkit-transition: all ease-in-out 0.3s;
+      -moz-transition: all ease-in-out 0.3s;
+      -ms-transition: all ease-in-out 0.3s;
+      -o-transition: all ease-in-out 0.3s;
+      transition: all ease-in-out 0.3s;
       opacity: 0; }
   .flash-carousel--slides.hide .flash-carousel--slide {
-    /*@include transition(0);*/ }
+    /*@include transition(all ease-in-out 0);*/ }
   .flash-carousel--slide {
-    -webkit-transition: all 0.4s ease-in-out;
-    -moz-transition: all 0.4s ease-in-out;
-    -ms-transition: all 0.4s ease-in-out;
-    -o-transition: all 0.4s ease-in-out;
-    transition: all 0.4s ease-in-out;
+    -webkit-transition: all ease-in-out 0.4s;
+    -moz-transition: all ease-in-out 0.4s;
+    -ms-transition: all ease-in-out 0.4s;
+    -o-transition: all ease-in-out 0.4s;
+    transition: all ease-in-out 0.4s;
     position: absolute; }
     .flash-carousel--slide img {
       position: relative;
@@ -67,11 +154,11 @@
     border-radius: 30px;
     -webkit-border-radius: 30px;
     -moz-border-radius: 30px;
-    -webkit-transition: all 0.2s ease-in-out;
-    -moz-transition: all 0.2s ease-in-out;
-    -ms-transition: all 0.2s ease-in-out;
-    -o-transition: all 0.2s ease-in-out;
-    transition: all 0.2s ease-in-out;
+    -webkit-transition: all ease-in-out 0.2s;
+    -moz-transition: all ease-in-out 0.2s;
+    -ms-transition: all ease-in-out 0.2s;
+    -o-transition: all ease-in-out 0.2s;
+    transition: all ease-in-out 0.2s;
     overflow: hidden;
     width: 30px;
     height: 30px;

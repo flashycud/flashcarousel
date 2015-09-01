@@ -6,10 +6,41 @@
   -webkit-border-radius: $r;
   -moz-border-radius: $r;
 }
-@mixin transition ($t) {
-  -webkit-transition: all $t ease-in-out;
-  -moz-transition: all $t ease-in-out;
-  -ms-transition: all $t ease-in-out;
-  -o-transition: all $t ease-in-out;
-  transition: all $t ease-in-out;
+@mixin transition ($t...) {
+  -webkit-transition: $t;
+  -moz-transition: $t;
+  -ms-transition: $t;
+  -o-transition: $t;
+  transition: $t;
+}
+@mixin transform ($t...) {
+  -ms-transform: $t; /* IE 9 */
+  -webkit-transform: $t; /* Chrome, Safari, Opera */
+  transform: $t;
+}
+
+@mixin keyframes($animation-name) {
+  @-webkit-keyframes #{$animation-name} {
+    @content;
+  }
+  @-moz-keyframes #{$animation-name} {
+    @content;
+  }  
+  @-ms-keyframes #{$animation-name} {
+    @content;
+  }
+  @-o-keyframes #{$animation-name} {
+    @content;
+  }  
+  @keyframes #{$animation-name} {
+    @content;
+  }
+}
+
+@mixin animation($str) {
+  -webkit-animation: #{$str};
+  -moz-animation: #{$str};
+  -ms-animation: #{$str};
+  -o-animation: #{$str};
+  animation: #{$str};      
 }

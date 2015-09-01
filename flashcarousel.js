@@ -17,12 +17,20 @@
 
       Instance,
 
+      ensureLoaded,
+
+      init,
+
+      attachLoading,
       attachImg,
       attachNav,
       attachPage,
       applyOptions,
+      bindImgEvents,
 
-      checkImgLoad,
+      bindImgLoad,
+      bindWindowResize,
+
       adjustImgSize,
       onAdjust,
 
@@ -37,11 +45,13 @@
       navRightArrClass = navRightClass + "-arrow",
       dotsClass = prefix + "dots",
       dotClass = prefix + "dot",
+      loadingSVGClass = prefix + "loading",
+      loadingPathClass = prefix + "loading-path",
 
       heightBasedClass = "height-based",
       widthBasedClass = "width-based",
 
-      arrZIndexOffest = 2,
+      arrZIndexOffset = 2,
 
       _o;
 
@@ -49,7 +59,8 @@
     zIndexBase: 0,
     fixHeight: true,
     height: 200,
-    imgSize: 'contain'
+    imgSize: 'contain',
+    gap: 10
   }
 
   FlashCarousel = function (t, options) {
@@ -61,63 +72,88 @@
 
 
   Instance = function(t, options) {
-    this.target = t;
-    this.options = {};
-    this.items = [];
-    this.pos = [];
-    this.curr = 0;
+    var self = this;
 
-    $.extend(this.options, _o, options);
+    self.target = t;
+    self.options = {};
+    self.holders = [];
+    self.imgs = undefined;
+    self.loading = undefined;
+    self.pos = [];
+    self.curr = 0;
+    self.pages = [];
+
+    $.extend(self.options, _o, options);
     
-    attachImg.call(this);
-    attachNav.call(this);    
-    attachPage.call(this); 
+    // Initially attach components
+    init.call(self);
 
-    applyOptions.call(this);   
+    $(window).load(function () {
+      self.navigateTo(0);
+      bindImgEvents.call(self);
+    });
 
   }
 
   Instance.prototype.navigateTo = function(page) {
-    var i, l=this.items.length;
+    var i, l=this.holders.length;
     
-    this.pages[this.curr].removeClass("active");
-    this.curr = (page < 0)? l-1: (page >= l)? 0: page;
-    this.pages[this.curr].addClass("active");
+    if (typeof(page) === "number" && this.pages.length > 0) {
+      this.pages[this.curr].removeClass("active");
+      this.curr = (page < 0)? l-1: (page >= l)? 0: page;
+      this.pages[this.curr].addClass("active");
 
-    for (i=0; i<l; i++) {
-      this.pos[i] = this.target.width() * (i - this.curr);
-      this.items[i].css("left", this.pos[i]);
-      this.items[i].css('z-index', this.options.zIndexBase);
+      for (i=0; i<l; i++) {
+        this.pos[i] = (this.target.width() + this.options.gap) * (i - this.curr);
+        this.holders[i].css("left", this.pos[i]);
+        this.holders[i].css('z-index', 0);
+      }
+
+      this.holders[this.curr].css("z-index", 1);
     }
+  }
 
-    this.items[this.curr].css("z-index", this.options.zIndexBase + 1);
+  init = function () {
+    attachImg.call(this);
+    attachLoading.call(this);
+    attachNav.call(this);    
+    attachPage.call(this); 
+    applyOptions.call(this);
+  }
+
+  attachLoading = function () {
+    var self = this, svg, path;
+
+    self.loading = svg = $('<svg class="'+loadingSVGClass+'" >'
+      + '<path class="'+loadingPathClass+'" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"></path>'
+      + '<svg>');
+
+    svg.css({
+      zIndex: self.options.zIndexBase,
+      opacity: 0
+    });
+
+    self.target.append(svg);
   }
 
   attachImg = function() {
-    'use strict'
-    var wrapper, el, holder,
+    var wrapper, holder,
         self = this;
 
-    this.target.addClass(mainClass);
+    self.target.addClass(mainClass);
     wrapper = $('<div>').addClass(slidesClass);
-    el = this.target.children();
+    wrapper.css('z-index', self.options.zIndexBase + 1);
+    self.imgs = self.target.children();
 
-    el.each(function (i) {
+    self.imgs.each(function (i) {
       var $this = $(this);
       $this.detach();
 
       holder = $('<div>').addClass(slideClass).addClass(imgLoadingClass);
+
       holder.append($this);
-
-      // checking loading status
-      checkImgLoad.call(self, $this);
-
       wrapper.append(holder);
-
-      self.pos.push(self.target.width() * i);
-      holder.css("left", self.pos[i]);
-
-      self.items.push(holder);
+      self.holders.push(holder);
     });
     self.target.append(wrapper);
   }
@@ -127,12 +163,12 @@
         right = $('<div>').addClass(navRightClass),
         self = this;
 
-    left.css("z-index", this.options.zIndexBase + arrZIndexOffest)
+    left.css("z-index", this.options.zIndexBase + arrZIndexOffset)
       .append($("<div>Previous</div>").addClass(navLeftArrClass))
       .click(function () {
         self.navigateTo(self.curr - 1);
       });
-    right.css("z-index", this.options.zIndexBase + arrZIndexOffest)
+    right.css("z-index", this.options.zIndexBase + arrZIndexOffset)
       .append($("<div>Next</div>").addClass(navRightArrClass))
       .click(function () {
         self.navigateTo(self.curr + 1);
@@ -146,9 +182,7 @@
         page,
         self = this;
 
-    this.pages = [];
-
-    for (var i=0, l=this.items.length; i<l; i++) {
+    for (var i=0, l=this.holders.length; i<l; i++) {
       page = $('<div>').addClass(dotClass);
       if (i == 0) {
         page.addClass('active');
@@ -170,34 +204,46 @@
   applyOptions = function() {
     var self = this;
 
-    // Height
+    // Carousel height
     if (self.options.fixHeight) {
       self.target.css('height', self.options.height);
     }
-
-    // Image Size
   }
 
-  checkImgLoad = function($img) {
-    var self = this,
-        resizeTimeout;
-    $img.one('load', function () {
-      adjustImgSize.call(self, $img);
-      
-      // Set event for img
-      var resizeTimeout;
-      $(window).resize(function() {
+  bindImgEvents = function () {
+    var self = this;
+
+    bindImgLoad.call(self);
+    bindWindowResize.call(self);
+    
+  }
+
+  bindImgLoad = function() {
+    var self = this;
+
+    self.imgs.one('load', function () {
+      adjustImgSize.call(self, $(this));
+    }).each(function(){
+      if (this.complete) $(this).load();
+    });
+  }
+
+  bindWindowResize = function() {
+    var self = this;
+
+    self.imgs.each(function () {
+      var resizeTimeout, $this = $(this);
+      $(window).resize(function () {
         self.target.find("."+slidesClass).addClass('hide');
-        adjustImgSize.call(self, $img);
+        self.loading.css('opacity', 1);
+        adjustImgSize.call(self, $this);
         self.navigateTo(self.curr);
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(function() {
           self.target.find("."+slidesClass).removeClass('hide');
+          self.loading.css('opacity', 0);
         }, 300);
-
       });
-    }).each(function(){
-      if (this.complete) $img.load();
     });
   }
 
@@ -205,17 +251,18 @@
     var self = this,
         ratio = $img.height()/$img.width(),
         targetRatio = self.target.height()/self.target.width();
+
     if (self.options.imgSize === 'contain') {
       if (ratio <= targetRatio) {
-        $img.addClass(widthBasedClass);
+        $img.addClass(widthBasedClass).removeClass(heightBasedClass);
       } else {
-        $img.addClass(heightBasedClass);
+        $img.addClass(heightBasedClass).removeClass(widthBasedClass);
       }
-    } else if (self.options.imgSize == 'cover') {
+    } else if (self.options.imgSize === 'cover') {
       if (ratio <= targetRatio) {
-        $img.addClass(heightBasedClass);
+        $img.addClass(heightBasedClass).removeClass(widthBasedClass);
       } else {
-        $img.addClass(widthBasedClass);
+        $img.addClass(widthBasedClass).removeClass(heightBasedClass);
       }
     }
     $img.css('margin-top', -$img.height()/2);

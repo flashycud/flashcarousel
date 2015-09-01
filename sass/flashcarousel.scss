@@ -29,29 +29,52 @@
 
   position: relative;
   min-height: $carousel-height;
+  background-color: $carousel-bg-color;
+
+
+  @include keyframes(rotate) {
+    0% { @include transform(rotate(0))}
+    100% { @include transform(rotate(360deg)) }
+  }
+
+  &--loading {
+    @include animation('rotate .5s linear infinite');
+    @include transition(opacity .3s);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
+    margin-left: -25px;
+    &-path {
+      fill: #FFF;
+      visibility: visible;
+    }
+  }
 
   &--slides {
     @extend .bounding-box;
-    @include transition($slides-show-duration);
+    @include transition(all ease-in-out $slides-show-duration);
 
     position: relative;
     z-index: 0;
     opacity: 1;
 
     &.hide {
-      @include transition($slides-fade-duration);
+      @include transition(all ease-in-out $slides-fade-duration);
       opacity: 0
     }
   }
 
   &--slides.hide &--slide {
-    /*@include transition(0);*/
+    /*@include transition(all ease-in-out 0);*/
   }
 
   &--slide {
     @extend .border-box;
     @extend .bounding-box;
-    @include transition($slide-duration);
+    @include transition(all ease-in-out $slide-duration);
 
     position: absolute;
     
@@ -84,7 +107,7 @@
 
   &--arrow {
     @include border-radius($arrow-size);
-    @include transition($arrow-duration);
+    @include transition(all ease-in-out $arrow-duration);
     overflow: hidden;
     width: $arrow-size;
     height: $arrow-size;
