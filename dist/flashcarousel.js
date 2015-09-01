@@ -1,4 +1,4 @@
-/*! FlashCarousel - v0.0.1 - 2015-07-21
+/*! FlashCarousel - v0.0.1 - 2015-09-01
 * https://github.com/flashycud/flashcarousel
 * Copyright (c) 2015 Flash <me@flashycud.com>; Licensed MIT */
 ;(function (root, factory) {
@@ -15,97 +15,178 @@
   }
 
 })(this, function () {
-
+  'use strict'
   var FlashCarousel,
 
       Instance,
+
+      ensureLoaded,
+
+      init,
+
+      attachLoading,
+      attachImg,
       attachNav,
       attachPage,
+      applyOptions,
+      bindImgEvents,
+
+      bindImgLoad,
+      bindWindowResize,
+
+      adjustImgSize,
+      onAdjust,
+
+      mainClass = "flash-carousel",
+      prefix = mainClass + "--",
+      slidesClass = prefix + "slides",
+      slideClass = prefix + "slide",
+      imgLoadingClass = prefix + "img-loading",
+      navLeftClass = prefix + "nav-left",
+      navRightClass = prefix + "nav-right",
+      navLeftArrClass = navLeftClass + "-arrow",
+      navRightArrClass = navRightClass + "-arrow",
+      dotsClass = prefix + "dots",
+      dotClass = prefix + "dot",
+      loadingSVGClass = prefix + "loading",
+      loadingPathClass = prefix + "loading-path",
+
+      heightBasedClass = "height-based",
+      widthBasedClass = "width-based",
+
+      arrZIndexOffset = 2,
 
       _o;
 
   _o = {
-    zIndexBase: 0
+    zIndexBase: 0,
+    fixHeight: true,
+    height: 200,
+    imgSize: 'contain',
+    gap: 10
   }
 
   FlashCarousel = function (t, options) {
     t = $(t);
-    new Instance(t, options);
+    t.each(function(){
+      new Instance($(this), options);
+    });
   };
 
 
   Instance = function(t, options) {
-    var wrapper, el, holder,
-        _this = this;
-    
-    this.target = t;
-    this.options = {};
-    this.items = [];
-    this.pos = [];
-    this.curr = 0;
+    var self = this;
 
-    $.extend(this.options, _o, options);
-    
-    this.target.addClass('flash-carousel');
-    wrapper = $('<div class="flash-carousel-slides">');
-    el = this.target.children();
+    self.target = t;
+    self.options = {};
+    self.holders = [];
+    self.imgs = undefined;
+    self.loading = undefined;
+    self.pos = [];
+    self.curr = 0;
+    self.pages = [];
 
-    el.each(function (i) {
-      var $this = $(this);
-      $this.detach();
-      holder = $('<div class="flash-carousel-slide">')
-      holder.append($this);
-      wrapper.append(holder);
-      _this.pos.push(_this.target.width() * i);
-      holder.css("left", _this.pos[i]);
-      _this.items.push(holder);
+    $.extend(self.options, _o, options);
+    
+    // Initially attach components
+    init.call(self);
+
+    $(window).load(function () {
+      self.navigateTo(0);
+      bindImgEvents.call(self);
     });
-
-    this.target.append(wrapper);
-
-    attachNav.call(this);    
-    attachPage.call(this);    
 
   }
 
   Instance.prototype.navigateTo = function(page) {
-    for (var i=0, l=this.items.length; i<l; i++) {
+    var i, l=this.holders.length;
+    
+    if (typeof(page) === "number" && this.pages.length > 0) {
       this.pages[this.curr].removeClass("active");
       this.curr = (page < 0)? l-1: (page >= l)? 0: page;
       this.pages[this.curr].addClass("active");
-      this.pos[i] = this.target.width() * (i - this.curr);
-      this.items[i].css("left", this.pos[i]);
+
+      for (i=0; i<l; i++) {
+        this.pos[i] = (this.target.width() + this.options.gap) * (i - this.curr);
+        this.holders[i].css("left", this.pos[i]);
+        this.holders[i].css('z-index', 0);
+      }
+
+      this.holders[this.curr].css("z-index", 1);
     }
   }
 
-  attachNav = function() {
-    var left = $('<div class="flash-carousel-nav-left">'),
-        right = $('<div class="flash-carousel-nav-right">'),
-        _this = this;
+  init = function () {
+    attachImg.call(this);
+    attachLoading.call(this);
+    attachNav.call(this);    
+    attachPage.call(this); 
+    applyOptions.call(this);
+  }
 
-    left.css("z-index", this.options.zIndexBase+1)
-      .append($("<div class='flash-carousel-nav-left-arrow'>Previous</div>"))
+  attachLoading = function () {
+    var self = this, svg, path;
+
+    self.loading = svg = $('<svg class="'+loadingSVGClass+'" >'
+      + '<path class="'+loadingPathClass+'" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"></path>'
+      + '<svg>');
+
+    svg.css({
+      zIndex: self.options.zIndexBase,
+      opacity: 0
+    });
+
+    self.target.append(svg);
+  }
+
+  attachImg = function() {
+    var wrapper, holder,
+        self = this;
+
+    self.target.addClass(mainClass);
+    wrapper = $('<div>').addClass(slidesClass);
+    wrapper.css('z-index', self.options.zIndexBase + 1);
+    self.imgs = self.target.children();
+
+    self.imgs.each(function (i) {
+      var $this = $(this);
+      $this.detach();
+
+      holder = $('<div>').addClass(slideClass).addClass(imgLoadingClass);
+
+      holder.append($this);
+      wrapper.append(holder);
+      self.holders.push(holder);
+    });
+    self.target.append(wrapper);
+  }
+
+  attachNav = function() {
+    var left = $('<div>').addClass(navLeftClass),
+        right = $('<div>').addClass(navRightClass),
+        self = this;
+
+    left.css("z-index", this.options.zIndexBase + arrZIndexOffset)
+      .append($("<div>Previous</div>").addClass(navLeftArrClass))
       .click(function () {
-        _this.navigateTo(_this.curr - 1);
+        self.navigateTo(self.curr - 1);
       });
-    right.css("z-index", this.options.zIndexBase+1)
-      .append($("<div class='flash-carousel-nav-right-arrow'>next</div>"))
+    right.css("z-index", this.options.zIndexBase + arrZIndexOffset)
+      .append($("<div>Next</div>").addClass(navRightArrClass))
       .click(function () {
-        _this.navigateTo(_this.curr + 1);
+        self.navigateTo(self.curr + 1);
       });
 
     this.target.append(left).append(right);
   }
 
   attachPage = function() {
-    var holder = $('<div class="flash-carousel-dots">'),
+    var holder = $('<div>').addClass(dotsClass),
         page,
-        _this = this;
+        self = this;
 
-    this.pages = [];
-
-    for (var i=0, l=this.items.length; i<l; i++) {
-      page = $('<div class="flash-carousel-dot">');
+    for (var i=0, l=this.holders.length; i<l; i++) {
+      page = $('<div>').addClass(dotClass);
       if (i == 0) {
         page.addClass('active');
       }
@@ -114,13 +195,87 @@
     }
     $(this.pages).each(function (i) {
       $(this).click(function () {
-        _this.navigateTo(i);
+        self.navigateTo(i);
       });
     });
 
     holder.css("z-index", this.options.zIndexBase+2);
     
     this.target.append(holder);
+  }
+
+  applyOptions = function() {
+    var self = this;
+
+    // Carousel height
+    if (self.options.fixHeight) {
+      self.target.css('height', self.options.height);
+    }
+  }
+
+  bindImgEvents = function () {
+    var self = this;
+
+    bindImgLoad.call(self);
+    bindWindowResize.call(self);
+    
+  }
+
+  bindImgLoad = function() {
+    var self = this;
+
+    self.imgs.one('load', function () {
+      adjustImgSize.call(self, $(this));
+    }).each(function(){
+      if (this.complete) $(this).load();
+    });
+  }
+
+  bindWindowResize = function() {
+    var self = this;
+
+    self.imgs.each(function () {
+      var resizeTimeout, $this = $(this);
+      $(window).resize(function () {
+        self.target.find("."+slidesClass).addClass('hide');
+        self.loading.css('opacity', 1);
+        adjustImgSize.call(self, $this);
+        self.navigateTo(self.curr);
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+          self.target.find("."+slidesClass).removeClass('hide');
+          self.loading.css('opacity', 0);
+        }, 300);
+      });
+    });
+  }
+
+  adjustImgSize = function($img) {
+    var self = this,
+        ratio = $img.height()/$img.width(),
+        targetRatio = self.target.height()/self.target.width();
+
+    if (self.options.imgSize === 'contain') {
+      if (ratio <= targetRatio) {
+        $img.addClass(widthBasedClass).removeClass(heightBasedClass);
+      } else {
+        $img.addClass(heightBasedClass).removeClass(widthBasedClass);
+      }
+    } else if (self.options.imgSize === 'cover') {
+      if (ratio <= targetRatio) {
+        $img.addClass(heightBasedClass).removeClass(widthBasedClass);
+      } else {
+        $img.addClass(widthBasedClass).removeClass(heightBasedClass);
+      }
+    }
+    $img.css('margin-top', -$img.height()/2);
+    $img.css('margin-left', -$img.width()/2);
+    $img.parent().removeClass(imgLoadingClass);
+  }
+
+  onAdjust = function() {
+    var self = this,
+        wrapper = self.target.find(slidesClass);
   }
 
 
