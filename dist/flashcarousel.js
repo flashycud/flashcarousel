@@ -63,7 +63,8 @@
     fixHeight: true,
     height: 200,
     imgSize: 'contain',
-    gap: 10
+    gap: 10,
+    loop: true
   }
 
   FlashCarousel = function (t, options) {
@@ -80,6 +81,7 @@
     self.target = t;
     self.options = {};
     self.holders = [];
+    self.wrapper = undefined;
     self.imgs = undefined;
     self.loading = undefined;
     self.pos = [];
@@ -94,17 +96,46 @@
     $(window).load(function () {
       self.navigateTo(0);
       bindImgEvents.call(self);
+
+      if (self.options.loop) {
+        self._holders = [];
+        for (var i in self.holders) {
+          self._holders.push(self.holders[i].clone(true).addClass('cloned'));
+        }
+      }
+
     });
 
   }
 
   Instance.prototype.navigateTo = function(page) {
-    var i, l=this.holders.length;
+    var i, l=this.holders.length
+        self = this;
     
     if (typeof(page) === "number" && this.pages.length > 0) {
+      
       this.pages[this.curr].removeClass("active");
       this.curr = (page < 0)? l-1: (page >= l)? 0: page;
       this.pages[this.curr].addClass("active");
+
+      if (self.options.loop 
+        && (page < 0 || page > self.pages.length - 1) ) {
+        var t = self.holders;
+        $(self._holders).detach().each(function (i) {
+
+          if (page < 0) {
+            self.holders[i].css('left', (self.target.width() + self.options.gap) * (i +1));
+            $(this).css('left', -(self.target.width() + self.options.gap) * (self.pages.length - i));
+          } else if (page > self.pages.length - 1) {
+            self.holders[i].css('left', -(self.target.width() + self.options.gap) * (self.pages.length - i));
+            $(this).css('left', (self.target.width() + self.options.gap) * (i + 1));
+          }
+
+          self.wrapper.append($(this));
+        });
+        self.holders = self._holders;
+        self._holders = t;
+      }
 
       for (i=0; i<l; i++) {
         this.pos[i] = (this.target.width() + this.options.gap) * (i - this.curr);
@@ -144,7 +175,7 @@
         self = this;
 
     self.target.addClass(mainClass);
-    wrapper = $('<div>').addClass(slidesClass);
+    self.wrapper = wrapper = $('<div>').addClass(slidesClass);
     wrapper.css('z-index', self.options.zIndexBase + 1);
     self.imgs = self.target.children();
 
@@ -158,6 +189,7 @@
       wrapper.append(holder);
       self.holders.push(holder);
     });
+
     self.target.append(wrapper);
   }
 
@@ -205,36 +237,36 @@
   }
 
   applyOptions = function() {
-    var self = this;
+    var self = this, i;
 
     // Carousel height
     if (self.options.fixHeight) {
       self.target.css('height', self.options.height);
     }
+
   }
 
   bindImgEvents = function () {
     var self = this;
 
-    bindImgLoad.call(self);
-    bindWindowResize.call(self);
-    
+    bindImgLoad.call(self, self.imgs);
+    bindWindowResize.call(self, self.imgs);
   }
 
-  bindImgLoad = function() {
+  bindImgLoad = function($img) {
     var self = this;
 
-    self.imgs.one('load', function () {
+    $img.one('load', function () {
       adjustImgSize.call(self, $(this));
     }).each(function(){
       if (this.complete) $(this).load();
     });
   }
 
-  bindWindowResize = function() {
+  bindWindowResize = function($img) {
     var self = this;
 
-    self.imgs.each(function () {
+    $img.each(function () {
       var resizeTimeout, $this = $(this);
       $(window).resize(function () {
         self.target.find("."+slidesClass).addClass('hide');
@@ -255,6 +287,7 @@
         ratio = $img.height()/$img.width(),
         targetRatio = self.target.height()/self.target.width();
 
+
     if (self.options.imgSize === 'contain') {
       if (ratio <= targetRatio) {
         $img.addClass(widthBasedClass).removeClass(heightBasedClass);
@@ -268,8 +301,8 @@
         $img.addClass(widthBasedClass).removeClass(heightBasedClass);
       }
     }
-    $img.css('margin-top', -$img.height()/2);
-    $img.css('margin-left', -$img.width()/2);
+    // $img.css('margin-top', -$img.height()/2);
+    // $img.css('margin-left', -$img.width()/2);
     $img.parent().removeClass(imgLoadingClass);
   }
 

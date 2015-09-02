@@ -135,6 +135,11 @@
     transition: all ease-in-out 0.4s;
     position: absolute; }
     .flash-carousel--slide img {
+      -ms-transform: translate(-50%, -50%);
+      /* IE 9 */
+      -webkit-transform: translate(-50%, -50%);
+      /* Chrome, Safari, Opera */
+      transform: translate(-50%, -50%);
       position: relative;
       top: 50%;
       left: 50%; }
