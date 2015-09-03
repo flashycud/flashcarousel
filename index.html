@@ -50,6 +50,30 @@ FlashCarousel(<span class="pl-s"><span class="pl-pds">"</span>.target<span class
 <span class="pl-c">// Use with jQuery object</span>
 FlashCarousel($(<span class="pl-s"><span class="pl-pds">"</span>.target<span class="pl-pds">"</span></span>));</pre></div>
 
+<h2>
+<a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options</h2>
+
+<p>FlashCarousel.js right now has 6 options that are configurable.</p>
+
+<ul>
+<li>zIndexBase: allows user to adjust zIndex of the carousel</li>
+<li>fixHeight: whether the carousel will have fixed height or depend on image height</li>
+<li>height: when fixHeight is true, carousel hight will be adjusted with this property.</li>
+<li>imgSize: 'contain' or 'cover'</li>
+<li>gap: a gap between images</li>
+<li>loop: make carousel slide in a loop</li>
+</ul>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> options <span class="pl-k">=</span> {
+      zIndexBase<span class="pl-k">:</span> <span class="pl-c1">0</span>,
+      fixHeight<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+      height<span class="pl-k">:</span> <span class="pl-c1">200</span>,
+      imgSize<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>contain<span class="pl-pds">'</span></span>,
+      gap<span class="pl-k">:</span> <span class="pl-c1">10</span>,
+      loop<span class="pl-k">:</span> <span class="pl-c1">true</span>
+}
+FlashCarousel(<span class="pl-s"><span class="pl-pds">"</span>.target<span class="pl-pds">"</span></span>, options);</pre></div>
+
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/flashycud/flashcarousel">FlashCarousel</a> is maintained by <a href="https://github.com/flashycud">flashycud</a>.</span>
 
