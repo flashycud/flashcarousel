@@ -32,12 +32,12 @@ FlashCarousel($(".target"));
 ##Options
 FlashCarousel.js right now has 6 options that are configurable.
 
-*zIndexBase: allows user to adjust zIndex of the carousel
-*fixHeight: whether the carousel will have fixed height or depend on image height
-*height: when fixHeight is true, carousel hight will be adjusted with this property.
-*imgSize: 'contain' or 'cover'
-*gap: a gap between images
-*loop: make carousel slide in a loop
+* zIndexBase: allows user to adjust zIndex of the carousel
+* fixHeight: whether the carousel will have fixed height or depend on image height
+* height: when fixHeight is true, carousel hight will be adjusted with this property.
+* imgSize: 'contain' or 'cover'
+* gap: a gap between images
+* loop: make carousel slide in a loop
 
 ```javascript
 var options = {
