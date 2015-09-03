@@ -19,30 +19,36 @@
     </section>
 
     <section class="main-content">
-      <h1>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
+      <p><a href="http://flashycud.com/assets/flashcarousel/index.html">view Demo</a>.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
 
 <p>FlashCarousel.js has a dependency on jQuery.</p>
 
-<pre><code>&lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="[your/path/to]/flashcarousel.js"&gt;&lt;/script&gt;
-&lt;link rel="stylesheet" type="text/css" href="[your/path/to]/flashcarousel.css"&gt;
-</code></pre>
+<div class="highlight highlight-html"><pre>&lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;
+&lt;<span class="pl-ent">script</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>[your/path/to]/flashcarousel.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;
+&lt;<span class="pl-ent">link</span> <span class="pl-e">rel</span>=<span class="pl-s"><span class="pl-pds">"</span>stylesheet<span class="pl-pds">"</span></span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text/css<span class="pl-pds">"</span></span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">"</span>[your/path/to]/flashcarousel.css<span class="pl-pds">"</span></span>&gt;</pre></div>
 
-<h1>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h1>
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
 
-<p>Simply put <img> tag in a placeholder.</p>
+<p>Simply put <code>&lt;img ... &gt;</code> tag in a placeholder.</p>
 
-<pre><code>&lt;div class="target"&gt;
-  &lt;img src="your/image/source"&gt;
-  &lt;img src="your/image/source"&gt;
-  &lt;img src="your/image/source"&gt;
+<div class="highlight highlight-html"><pre>&lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>target<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">img</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>your/image/source<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">img</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>your/image/source<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">img</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>your/image/source<span class="pl-pds">"</span></span>&gt;
   ......
-&lt;/div&gt;
-</code></pre>
+&lt;/<span class="pl-ent">div</span>&gt;</pre></div>
 
-<p>Then, in a </p>
+<p>Then, in a <code>&lt;script&gt;</code>, either use selector string or use jQuery object to pass as a parameter through <code>FlashCarousel( [ PLACEHOLDER ] );</code>. Just like in the example:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// Use as a selector</span>
+FlashCarousel(<span class="pl-s"><span class="pl-pds">"</span>.target<span class="pl-pds">"</span></span>);
+
+<span class="pl-c">// Use with jQuery object</span>
+FlashCarousel($(<span class="pl-s"><span class="pl-pds">"</span>.target<span class="pl-pds">"</span></span>));</pre></div>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/flashycud/flashcarousel">FlashCarousel</a> is maintained by <a href="https://github.com/flashycud">flashycud</a>.</span>
